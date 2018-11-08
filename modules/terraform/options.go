@@ -8,7 +8,8 @@ import (
 
 // Options for running Terraform commands
 type Options struct {
-	TerraformDir             string                 // The path to the folder where the Terraform code is defined.
+	TerraformDir             string                 // The path to the folder where the Terraform code is defined. Relative to WorkingDir.
+	WorkingDir               string                 // Path to the working directory where Terraform is executed. Defaults to TerraformDir.
 	Vars                     map[string]interface{} // The vars to pass to Terraform commands using the -var option.
 	EnvVars                  map[string]string      // Environment variables to set when running Terraform
 	BackendConfig            map[string]interface{} // The vars to pass to the terraform init command for extra configuration for the backend
