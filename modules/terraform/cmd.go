@@ -25,6 +25,18 @@ func GetCommonOptions(options *Options, args ...string) (*Options, []string) {
 		}
 		options.EnvVars["SSH_AUTH_SOCK"] = options.SshAgent.SocketFile()
 	}
+
+	// Default WorkingDir to TerraformDir
+	if options.WorkingDir == "" && options.TerraformDir != "" {
+		options.WorkingDir = options.TerraformDir
+	}
+
+	// Append TerraformDir
+	if options.WorkingDir != options.TerraformDir && len(args) > 0 &&
+	   (args[0] == "init" || args[0] == "get" || args[0] == "plan" || args[0] == "apply" || args[0] == "destroy") {
+		args = append(args, options.TerraformDir)
+	}
+
 	return options, args
 }
 
@@ -46,7 +58,7 @@ func RunTerraformCommandE(t *testing.T, additionalOptions *Options, additionalAr
 		cmd := shell.Command{
 			Command:    "terraform",
 			Args:       args,
-			WorkingDir: options.TerraformDir,
+			WorkingDir: options.WorkingDir,
 			Env:        options.EnvVars,
 		}
 
