@@ -26,6 +26,13 @@ func GetCommonOptions(options *Options, args ...string) (*Options, []string) {
 		options.EnvVars["SSH_AUTH_SOCK"] = options.SshAgent.SocketFile()
 	}
 
+	// Append -target= arguments
+	if options.Targets != nil && (args[0] == "plan" || args[0] == "apply" || args[0] == "destroy") {
+		for _, target := range options.Targets {
+			args = append(args, "-target="+target)
+		}
+	}
+
 	// Default WorkingDir to TerraformDir
 	if options.WorkingDir == "" && options.TerraformDir != "" {
 		options.WorkingDir = options.TerraformDir
